@@ -11,11 +11,12 @@ class Player:
         self.grounded_frames_remaining = 0
         self.jump_timer = 0
         self.explosion_timer = -1
+        self.animation_timer = 0
         self.velocity = Vector2(0, 0)
         self.explosion_sprites = [ pygame.image.load(f'src/res/Explode{i}.png') for i in range(1, 7) ]
-        self.explosion_center = (0, 0)
-        self.sprite = pygame.image.load('src/res/Erik.png')
-        self.rect = self.sprite.get_rect(center=(100, 100))
+        self.explosion_rect = None
+        self.sprites = [ pygame.image.load(f'src/res/Erik{x}.png') for x in ['', 'Left', 'Right'] ]
+        self.rect = self.sprites[0].get_rect(center=(100, 100))
         # self.rect.height *= 0.95
 
     def handle_movement(self, inputState: InputState, dt):
@@ -31,7 +32,7 @@ class Player:
 
         if inputState.boost:
             self.explosion_timer = 0
-            self.explosion_center = self.rect.center
+            self.explosion_rect = self.rect
 
     def update(self, dt, blocks):
         target_speed = 1500
@@ -64,11 +65,21 @@ class Player:
         if self.grounded_frames_remaining > 0:
             self.grounded_frames_remaining -= 1
 
+    def getSprite(self):
+        animationLength = 12
+        if -50 < self.velocity.x < 50:
+            return self.sprites[0]
+        sprite = self.sprites[self.animation_timer//animationLength]
+        self.animation_timer += 1
+        self.animation_timer %= animationLength*len(self.sprites)
+        return sprite
+        
+
     def draw(self, surface: Surface):
-        surface.blit(self.sprite, self.rect)
+        surface.blit(self.getSprite(), self.rect)
         if self.explosion_timer >= 0:
             if self.explosion_timer >= 2*len(self.explosion_sprites):
                 self.explosion_timer = -1
             else:
-                surface.blit(self.explosion_sprites[self.explosion_timer//2], self.explosion_center)
+                surface.blit(self.explosion_sprites[self.explosion_timer//2], self.explosion_rect)
                 self.explosion_timer += 1
