@@ -4,7 +4,7 @@ from pygame.surface import Surface
 
 from res.dims import dims
 from res.string import strings
-from src.player import Player
+from player import Player
 
 from Block import Block
 

@@ -7,7 +7,7 @@ from pygame.surface import Surface
 class Player:
     def __init__(self):
         self.velocity = Vector2(0, 0)
-        self.sprite = pygame.image.load('res/Erik.png')
+        self.sprite = pygame.image.load('src/res/Erik.png')
         self.rect = self.sprite.get_rect()
 
     def update(self, dt):

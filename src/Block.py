@@ -4,7 +4,7 @@ from pygame import Surface
 
 class Block:
     def __init__(self):
-        self.sprite = pygame.image.load('res/Block.png')
+        self.sprite = pygame.image.load('src/res/Block.png')
         self.rect = self.surface.get_rect()
 
     def update(self):
