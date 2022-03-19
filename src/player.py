@@ -98,7 +98,7 @@ class Player:
         if self.rect.y > 1080:
             self.kill()
         
-        if self.rect.bottom <= 0:
+        if self.rect.y <= 0:
             self.hasWon = True
 
     def kill(self):
@@ -106,7 +106,7 @@ class Player:
 
     def getSprite(self):
         sprites = self.sprites_right if self.facing_right else self.sprites_left
-        animationLength = 8
+        animationLength = 6
         if -50 < self.velocity.x < 50:
             return sprites[0]
         sprite = sprites[self.animation_timer//animationLength]
