@@ -16,9 +16,18 @@ class Player:
         if inputState.jump:
             pass
         if inputState.left:
-            pass
+            if self.velocity.x > -400:
+                self.velocity.x -= 10
+        else:
+            if self.velocity.x < 0:
+                self.velocity.x += 50
+
         if inputState.right:
-            pass
+            if self.velocity.x < 400:
+                self.velocity.x += 10
+        else:
+            if self.velocity.x > 0:
+                self.velocity.x -= 50
         if inputState.boost:
             pass
 
@@ -26,7 +35,7 @@ class Player:
         self.velocity.y += (100 * dt)
 
         self.rect = self.rect.move((self.velocity.x*dt, 0))
-        # detect x collision
+        # detect x collision with blocks
         for block in blocks:
             if self.rect.colliderect(block.rect):
                 if self.velocity.x > 0:
@@ -36,7 +45,7 @@ class Player:
                 self.velocity.x = 0
 
         self.rect = self.rect.move((0, self.velocity.y*dt))
-        # detect y collision
+        # detect y collision with blocks
         for block in blocks:
             if self.rect.colliderect(block.rect):
                 if self.velocity.y > 0:
