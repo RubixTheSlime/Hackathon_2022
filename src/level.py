@@ -14,6 +14,10 @@ class Level:
                 for col, symbol in enumerate(line):
                     if symbol == '#':
                         self.blocks.append(Block(col, row))
+                    if symbol == 'X':
+                        self.blocks.append(Block(col, row, instant_death=True))
+                    if symbol == '~':
+                        self.blocks.append(Block(col, row, fragile=True))
 
     def draw(self, surface: Surface):
         for i, block in enumerate(self.blocks):

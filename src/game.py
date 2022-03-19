@@ -23,7 +23,7 @@ class Game:
         self.base_font: Font = None
         self.player = Player()
         self.level = Level()
-        self.level.read('src/res/levels/test_level_1.txt')
+        self.level.read('src/res/levels/test_level_2.txt')
         # self.blocks: 'list[Block]' = [ Block(left=i, top=dims['window_height']/Block.SIZE - 1) for i in range(16) ] + [ Block(left=i, top=dims['window_height']/Block.SIZE - 2) for i in range(6,10)]
         self.backgrounds = [ pygame.image.load(f'src/res/{name}.png').convert() for name in ['StoryBackground', 'DayBackground', 'EveningBackground', 'NightBackground', 'TheEnd' ] ]
         self.levelNum = 0
@@ -52,7 +52,7 @@ class Game:
     def update(self, dt):
         if self.levelNum == 0 and self.input_state.jump:
             self.levelNum = 1
-        if self.player.alive == False:
+        if not self.player.alive:
             self.levelNum = 0
         self.player.update(dt, self.level.blocks)
         if self.player.hasWon:
