@@ -17,7 +17,7 @@ class Game:
         self.window_surface: Surface = None
         self.base_font: Font = None
         self.player = Player()
-        self.blocks: 'list[Block]' = None
+        self.blocks: 'list[Block]' = [ Block(left=i*Block.SIZE, top=dims['window_height']-Block.SIZE) for i in range(16) ]
 
     def run(self) -> None:
         pygame.init()
@@ -56,4 +56,6 @@ class Game:
     def draw(self):
         self.window_surface.fill((255, 255, 255), self.window_surface.get_rect())
         self.player.draw(self.window_surface)
+        for i, block in enumerate(self.blocks):
+            block.draw(self.window_surface)
         pygame.display.flip()
