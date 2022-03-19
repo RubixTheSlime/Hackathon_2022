@@ -44,6 +44,7 @@ class InputState:
             'jump',
             'boost',
             'quit',
+            'restart',
         )}
 
     def __getattr__(self, item):
@@ -72,6 +73,7 @@ def update_input_state(input_state: InputState, event: Event):
             pygame.K_c: 'boost',
             pygame.K_e: 'boost',
             pygame.K_ESCAPE: 'quit',
+            pygame.K_r: 'restart',
         }[event.key]
 
     except KeyError:

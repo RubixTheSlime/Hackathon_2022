@@ -25,6 +25,8 @@ class Level:
                         self.blocks.append(Block(col, row, instant_death=True))
                     if symbol == '~':
                         self.blocks.append(Block(col, row, fragile=True))
+                    if symbol == '_':
+                        self.blocks.append(Block(col, row, semisolid=True))
                     if symbol == 'S':
                         self.start = Vector2(col, row)
                 row += 1
