@@ -93,7 +93,6 @@ class InputState:
         self.state[button].set(event.type == pygame.JOYBUTTONDOWN)
 
     def handle_joystick_hat_event(self, event: Event):
-        print(event.value)
         self.state['right'].set(event.value[0] == 1)
         self.state['down'].set(event.value[1] == -1)
         self.state['left'].set(event.value[0] == -1)

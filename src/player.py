@@ -113,6 +113,8 @@ class Player:
             self.touching[name] = False
             collision = Rect(Vector2(self.rect.topleft) + Vector2(offset), (self.rect.width, self.rect.height))
             for block in blocks:
+                if block.block_type == BlockType.DEATH:
+                    continue
                 if block.block_type == BlockType.SEMISOLID and not vertical:
                     continue
                 if collision.colliderect(block.rect):

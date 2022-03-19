@@ -1,3 +1,5 @@
+import os
+import random
 from enum import Enum
 
 import pygame
@@ -16,14 +18,16 @@ class Block:
         BlockType.NORMAL: "Block",
         BlockType.DEATH: "DeathBlock",
         BlockType.FRAGILE: "BreakableBlock",
-        BlockType.SEMISOLID: "SemiSolid",
+        BlockType.SEMISOLID: "SemiSolidBlock",
     }
 
     SIZE = 120
 
     def __init__(self, left, top, block_type: BlockType):
         self.block_type = block_type
-        self.sprite = pygame.image.load(f'src/res/{Block.block_type_name[block_type]}.png').convert()
+        path_start = f'src/res/{Block.block_type_name[block_type]}'
+        path = os.path.join(path_start, random.choice(os.listdir(path_start)))
+        self.sprite = pygame.image.load(path).convert()
         self.rect = self.sprite.get_rect(left=left * Block.SIZE, top=top * Block.SIZE, width=Block.SIZE,
                                          height=Block.SIZE)
 

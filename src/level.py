@@ -3,12 +3,14 @@ from pygame.math import Vector2
 from pygame.surface import Surface
 import re
 
+from backgroundblock import BackgroundBlock
 from block import Block, BlockType
 
 
 class Level:
     def __init__(self):
-        self.background_sprite = pygame.image.load('src/res/BackgroundBlock.png').convert()
+        self.background_sprite = pygame.image.load('src/res/BackgroundBlock/BackgroundBlock.png').convert()
+        self.background_blocks: 'list[list[BackgroundBlock]]' = []
         self.blocks: 'list[Block]' = []
         self.bombs = 0
         self.start = None
@@ -16,6 +18,13 @@ class Level:
 
     def read(self, filename: str) -> None:
         self.level = int(re.search(r'\d+', filename).group())
+
+        # self.background_blocks = []
+        # if self.level < 10:
+        #     for row in range(9):
+        #         for col in range(8):
+        #             self.background_blocks[col][row] = BackgroundBlock()
+
         self.blocks = []
         with open(filename, 'r') as f:
             row = 0
