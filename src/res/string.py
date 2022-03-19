@@ -1,3 +1,3 @@
 strings = {
-    'window_title': 'An Interesting Title'
+    'window_title': 'The Explosive Adventures of Erik Falor!!!'
 }
