@@ -53,7 +53,7 @@ class Game:
         if self.levelNum == 0 and self.input_state.jump:
             self.levelNum = 1
         if self.player.alive == False:
-            self.levelNum = 1
+            self.levelNum = 0
         self.player.update(dt, self.level.blocks)
 
     def handle_events(self, dt):
