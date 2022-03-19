@@ -60,6 +60,8 @@ class Player:
         # detect x collision with blocks
         for block in blocks:
             if self.rect.colliderect(block.rect):
+                if block.instant_death:
+                    self.kill()
                 if self.velocity.x > 0:
                     self.rect.right = block.rect.left
                 else: # self.velocity.x is negative
@@ -70,6 +72,8 @@ class Player:
         # detect y collision with blocks
         for block in blocks:
             if self.rect.colliderect(block.rect):
+                if block.instant_death:
+                    self.kill()
                 if self.velocity.y >= 0:
                     self.rect.bottom = block.rect.top
                     self.grounded_time_remaining = 0.1
@@ -82,11 +86,14 @@ class Player:
 
         # detect if dead
         if self.rect.y > 1080:
-            self.alive = False
+            self.kill()
+
+    def kill(self):
+        self.alive = False
 
     def getSprite(self):
         sprites = self.sprites_right if self.facing_right else self.sprites_left
-        animationLength = 4
+        animationLength = 8
         if -50 < self.velocity.x < 50:
             return sprites[0]
         sprite = sprites[self.animation_timer//animationLength]
@@ -100,8 +107,8 @@ class Player:
         self.draw_rect.bottom = self.rect.bottom
         surface.blit(self.getSprite(), self.draw_rect)
         if self.explosion_timer >= 0:
-            if self.explosion_timer >= 2*len(self.explosion_sprites):
+            if self.explosion_timer >= 4*len(self.explosion_sprites):
                 self.explosion_timer = -1
             else:
-                surface.blit(self.explosion_sprites[self.explosion_timer//2], self.explosion_rect)
+                surface.blit(self.explosion_sprites[self.explosion_timer//4], self.explosion_rect)
                 self.explosion_timer += 1
