@@ -1,9 +1,11 @@
+from time import sleep
 import pygame
 from pygame.font import Font
 from pygame.surface import Surface
 from BackgroundBlock import BackgroundBlock
 
 from inputstate import InputState, update_input_state
+from level import Level
 from res.dims import dims
 from res.string import strings
 from player import Player
@@ -21,9 +23,11 @@ class Game:
         self.background_image = pygame.image.load('src/res/DayBackground.png').convert()
         self.base_font: Font = None
         self.player = Player()
-        self.blocks: 'list[Block]' = [ Block(left=i*Block.SIZE, top=dims['window_height']-Block.SIZE) for i in range(16) ] + [ Block(left=i*Block.SIZE + 6*Block.SIZE, top=dims['window_height'] - Block.SIZE*2) for i in range(4)]
-        self.backgrounds = [pygame.image.load('src/res/StoryBackground.png').convert(), pygame.image.load('src/res/DayBackground.png').convert(), pygame.image.load('src/res/EveningBackground.png').convert(), pygame.image.load('src/res/NightBackground.png').convert(), pygame.image.load('src/res/TheEnd.png').convert()]
-        self.levelNum = 1
+        self.level = Level()
+        self.level.read('src/res/levels/test_level_1.txt')
+        # self.blocks: 'list[Block]' = [ Block(left=i, top=dims['window_height']/Block.SIZE - 1) for i in range(16) ] + [ Block(left=i, top=dims['window_height']/Block.SIZE - 2) for i in range(6,10)]
+        self.backgrounds = [ pygame.image.load(f'src/res/{name}.png') for name in ['StoryBackground', 'DayBackground', 'EveningBackground', 'NightBackground', 'TheEnd' ] ]
+        self.levelNum = 0
 
     def run(self) -> None:
         self.base_font = Font(None, dims['default_font_size'])
@@ -47,7 +51,9 @@ class Game:
         self.running = False
 
     def update(self, dt):
-        self.player.update(dt, self.blocks)
+        if self.levelNum == 0 and self.input_state.jump:
+            self.levelNum = 1
+        self.player.update(dt, self.level.blocks)
 
     def handle_events(self, dt):
         for event in pygame.event.get():
@@ -62,14 +68,16 @@ class Game:
 
         self.input_state.flush()
         
-        self.player.handle_movement(self.input_state, dt)
+        if not self.levelNum == 0:
+            self.player.handle_movement(self.input_state, dt)
 
     def getBackgroundImage(self, levelNum):
         return self.backgrounds[levelNum]
     
     def draw(self, dt):
-        self.window_surface.blit(self.getBackgroundImage(self.levelNum), (0, frame))
-        for block in self.blocks:
-            block.draw(self.window_surface)
-        self.player.draw(self.window_surface)
+        self.window_surface.blit(self.getBackgroundImage(self.levelNum), (0,0))
+
+        if not self.levelNum == 0:
+            self.level.draw(self.window_surface)
+            self.player.draw(self.window_surface)
         pygame.display.flip()
