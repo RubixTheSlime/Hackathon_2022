@@ -10,7 +10,10 @@ class Player:
     def __init__(self):
         self.grounded_frames_remaining = 0
         self.jump_timer = 0
+        self.explosion_timer = -1
         self.velocity = Vector2(0, 0)
+        self.explosion_sprites = [ pygame.image.load(f'src/res/Explode{i}.png') for i in range(1, 7) ]
+        self.explosion_center = (0, 0)
         self.sprite = pygame.image.load('src/res/Erik.png')
         self.rect = self.sprite.get_rect(center=(100, 100))
 
@@ -26,7 +29,8 @@ class Player:
             self.velocity.x += (target_speed - self.velocity.x) * 0.13
 
         if inputState.boost:
-            pass
+            self.explosion_timer = 0
+            self.explosion_center = self.rect.center
 
     def update(self, dt, blocks):
         if self.jump_timer:
@@ -65,3 +69,9 @@ class Player:
 
     def draw(self, surface: Surface):
         surface.blit(self.sprite, self.rect)
+        if self.explosion_timer >= 0:
+            if self.explosion_timer >= 2*len(self.explosion_sprites):
+                self.explosion_timer = -1
+            else:
+                surface.blit(self.explosion_sprites[self.explosion_timer//2], self.explosion_center)
+                self.explosion_timer += 1

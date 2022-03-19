@@ -30,7 +30,7 @@ class Game:
 
         while self.running:
             self.handle_events()
-            self.update(1/30)
+            self.update(1/dims['fps'])
             self.draw()
             clock.tick(dims['fps'])
 
