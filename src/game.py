@@ -96,5 +96,5 @@ class Game:
         if not self.levelNum == 0:
             self.level.draw(self.window_surface)
             self.window_surface.blit(self.base_font.render(f'Bombs - {self.player.grenade_count}', True, (0, 0, 0)), (50, 40))
-            self.player.draw(self.window_surface)
+            self.player.draw(self.window_surface, self.level)
         pygame.display.flip()

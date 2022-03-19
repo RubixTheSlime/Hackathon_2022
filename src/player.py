@@ -4,6 +4,7 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from inputstate import InputState
+from level import Level
 
 
 class Player:
@@ -18,6 +19,7 @@ class Player:
 
         self.explosion_sprites = [ pygame.image.load(f'src/res/Explode{i}.png').convert_alpha() for i in range(1, 7) ]
         self.explosion_rect = self.explosion_sprites[0].get_rect()
+
         self.sprites_right = [ pygame.image.load(f'src/res/Erik{x}.png').convert_alpha() for x in ['', 'Left', '', 'Right'] ]
         self.sprites_left = [ pygame.transform.flip(surface, True, False) for surface in self.sprites_right ]
         self.facing_right = True
@@ -96,7 +98,7 @@ class Player:
         if self.rect.y > 1080:
             self.kill()
         
-        if self.rect.top < 0:
+        if self.rect.bottom <= 0:
             self.hasWon = True
 
     def kill(self):
@@ -112,7 +114,7 @@ class Player:
         self.animation_timer %= animationLength*len(sprites)
         return sprite
 
-    def draw(self, surface: Surface):
+    def draw(self, surface: Surface, level: Level):
         self.draw_rect.centerx = self.rect.centerx
         self.draw_rect.bottom = self.rect.bottom
         surface.blit(self.getSprite(), self.draw_rect)
@@ -120,6 +122,9 @@ class Player:
             if self.explosion_timer >= 4*len(self.explosion_sprites):
                 self.explosion_timer = -1
             else:
+                for block in level.blocks:
+                    if self.explosion_rect.colliderect(block.rect) and block.fragile:
+                        level.blocks.remove(block)
                 surface.blit(self.explosion_sprites[self.explosion_timer//4], self.explosion_rect)
                 self.explosion_timer += 1
 
