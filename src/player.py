@@ -16,7 +16,7 @@ class Player:
     def handle_movement(self, inputState: InputState):
         if inputState.jump:
             if self.grounded:
-                self.velocity.y = 100
+                self.velocity.y = -1000
 
         if inputState.left:
             if self.velocity.x > -400:
@@ -34,7 +34,7 @@ class Player:
             pass
 
     def update(self, dt, blocks):
-        self.velocity.y += (100 * dt)
+        self.velocity.y += (1000 * dt)
 
         self.rect = self.rect.move((self.velocity.x*dt, 0))
         # detect x collision with blocks
@@ -51,7 +51,7 @@ class Player:
         self.grounded = False
         for block in blocks:
             if self.rect.colliderect(block.rect):
-                if self.velocity.y > 0:
+                if self.velocity.y >= 0:
                     self.rect.bottom = block.rect.top
                     self.grounded = True
                 else: # self.velocity.y is negative
