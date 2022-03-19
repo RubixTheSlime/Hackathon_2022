@@ -36,9 +36,18 @@
 Determine if a key is held - Lyle
 Determine speed changes from held keys - Lyle
 
-Determine position changes from speed - Pretty easy
+Determine position changes from speed - Pretty easy (test for collision after)
 
 Detect collisions - Sam
-If they are colliding
-    Move back to wall
-    Set velocity to zero
+For block in blocks on screen
+    If the player and block collide in the x axis
+        If the player has positive x velocity
+            move player right to block left
+        else player has negative x velocity
+            move player left to block right
+        Set x velocity to zero
+    If the player and block are colliding in the y axis
+        If the player has positive y velocity
+            move player bottom to block top
+        else the player has negative y velocity
+            move player top to block bottom
