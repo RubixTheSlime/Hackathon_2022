@@ -10,13 +10,40 @@ class Player:
     def __init__(self):
         self.velocity = Vector2(0, 0)
         self.sprite = pygame.image.load('src/res/Erik.png')
-        self.rect = self.sprite.get_rect()
+        self.rect = self.sprite.get_rect(center=(100, 100))
 
     def handle_movement(self, inputState: InputState):
-        pass
+        if inputState.jump:
+            pass
+        if inputState.left:
+            pass
+        if inputState.right:
+            pass
+        if inputState.boost:
+            pass
 
-    def update(self, dt):
-        self.rect.move(*(self.velocity * dt))
+    def update(self, dt, blocks):
+        self.velocity.y += (100 * dt)
+
+        self.rect = self.rect.move((self.velocity.x*dt, 0))
+        # detect x collision
+        for block in blocks:
+            if self.rect.colliderect(block.rect):
+                if self.velocity.x > 0:
+                    self.rect.right = block.rect.left
+                else: # self.velocity.x is negative
+                    self.rect.left = block.rect.right
+                self.velocity.x = 0
+
+        self.rect = self.rect.move((0, self.velocity.y*dt))
+        # detect y collision
+        for block in blocks:
+            if self.rect.colliderect(block.rect):
+                if self.velocity.y > 0:
+                    self.rect.bottom = block.rect.top
+                else: # self.velocity.y is negative
+                    self.rect.top = block.rect.bottom
+                self.velocity.y = 0
 
     def draw(self, surface: Surface):
         surface.blit(self.sprite, self.rect)

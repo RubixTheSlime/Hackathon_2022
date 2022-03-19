@@ -8,11 +8,11 @@ from pygame.event import Event
 class InputState:
     def __init__(self):
         self.state = {
-            'up': False,
             'down': False,
             'left': False,
             'right': False,
-            'jump': False
+            'jump': False,
+            'boost': False,
         }
 
     def __getattr__(self, item):
@@ -24,8 +24,8 @@ class InputState:
 def update_input_state(input_state: InputState, event: Event):
     try:
         button = {
-            pygame.K_w: 'up',
-            pygame.K_UP: 'up',
+            pygame.K_w: 'jump',
+            pygame.K_UP: 'jump',
             pygame.K_s: 'down',
             pygame.K_DOWN: 'down',
             pygame.K_a: 'left',
@@ -33,6 +33,8 @@ def update_input_state(input_state: InputState, event: Event):
             pygame.K_d: 'right',
             pygame.K_RIGHT: 'right',
             pygame.K_SPACE: 'jump',
+            pygame.K_j: 'boost',
+            pygame.K_c: 'boost',
         }[event.key]
 
     except KeyError:

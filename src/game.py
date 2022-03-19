@@ -40,7 +40,7 @@ class Game:
         self.running = False
 
     def update(self, dt):
-        self.player.update(dt)
+        self.player.update(dt, self.blocks)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -52,10 +52,12 @@ class Game:
                 }[event.type]()
             except KeyError:
                 pass
+        
+        self.player.handle_movement(self.input_state)
 
     def draw(self):
         self.window_surface.fill((255, 255, 255), self.window_surface.get_rect())
-        self.player.draw(self.window_surface)
         for i, block in enumerate(self.blocks):
             block.draw(self.window_surface)
+        self.player.draw(self.window_surface)
         pygame.display.flip()
