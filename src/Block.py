@@ -13,6 +13,11 @@ class Block:
         self.rect = self.sprite.get_rect(left=left * Block.SIZE, top=top * Block.SIZE, width=Block.SIZE,
                                          height=Block.SIZE)
 
+    # This code was unused, but saved for if we want to try to make blocks breakable
+    # def checkIfBroken(self, playerX, playerY):
+    #     if self.fragile and playerY > self.rect.top and playerY < self.rect.top + 30 and playerX > self.rect.left and playerX < self.rect.left + Block.SIZE:
+    #         print("Break!")
+
     def update(self):
         pass
 
