@@ -12,12 +12,15 @@ class Player:
         self.jump_timer = 0
         self.explosion_timer = -1
         self.animation_timer = 0
+
         self.velocity = Vector2(0, 0)
+
         self.explosion_sprites = [ pygame.image.load(f'src/res/Explode{i}.png') for i in range(1, 7) ]
         self.explosion_rect = self.explosion_sprites[0].get_rect()
         self.sprites_right = [ pygame.image.load(f'src/res/Erik{x}.png') for x in ['', 'Left', '', 'Right'] ]
         self.sprites_left = [ pygame.transform.flip(surface, True, False) for surface in self.sprites_right ]
         self.facing_right = True
+
         self.rect = self.sprites_right[0].get_rect(center=(100, 100))
         # self.rect.height *= 0.95
 
@@ -26,9 +29,9 @@ class Player:
             if self.grounded_time_remaining > 0:
                 self.velocity.y = -800
 
-        if inputState.right:
+        if inputState.right.pos_edge:
             self.facing_right = True
-        elif inputState.left:
+        elif inputState.left.pos_edge:
             self.facing_right = False
 
         target_speed = 400 * (int(inputState.right) - int(inputState.left))
@@ -88,8 +91,8 @@ class Player:
     def draw(self, surface: Surface):
         surface.blit(self.getSprite(), self.rect)
         if self.explosion_timer >= 0:
-            if self.explosion_timer >= 2*len(self.explosion_sprites):
+            if self.explosion_timer >= 4*len(self.explosion_sprites):
                 self.explosion_timer = -1
             else:
-                surface.blit(self.explosion_sprites[self.explosion_timer//2], self.explosion_rect)
+                surface.blit(self.explosion_sprites[self.explosion_timer//4], self.explosion_rect)
                 self.explosion_timer += 1
