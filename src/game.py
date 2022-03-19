@@ -135,12 +135,11 @@ class Game:
                 self.player.draw(self.window_surface)
                 self.explosion_handler.draw(self.window_surface)
         else:
-            if self.transition_frame >= 120:
+            if self.transition_frame >= 150:
                 self.transition_frame = -1
             else:
                 self.transition_frame += 1
                 self.window_surface.fill((52, 89, 153))
-                self.window_surface.blit(
-                    self.base_font.render(f'Finished level {self.level_num - 1}!', True, (255, 255, 255)),
-                    (-60 + self.transition_frame, dims['window_height'] - 200))
+                text = self.base_font.render(f'Level {self.level_num - 1} Complete!', True, (255, 255, 255))
+                self.window_surface.blit(text, (dims['window_width'] - self.transition_frame*20, dims['window_height']/2 - text.get_height() / 2))
         pygame.display.flip()
