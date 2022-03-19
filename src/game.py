@@ -39,13 +39,12 @@ class Game:
         self.running = True
 
         while self.running:
-            dt = 1 / dims['fps']
+            dt = clock.tick(dims['fps']) / 1000
             self.handle_events(dt)
             if self.input_state.quit:
                 self.stop()
             self.update(dt)
             self.draw(dt)
-            clock.tick(dims['fps'])
 
         pygame.quit()
 

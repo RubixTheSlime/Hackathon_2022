@@ -1,3 +1,5 @@
+import math
+
 import pygame
 from pygame import Vector2
 from pygame.rect import Rect
@@ -10,6 +12,7 @@ from inputstate import InputState
 
 class Player:
     def __init__(self):
+        self.has_landed = False
         self.grounded_time_remaining = 0
         self.animation_timer = 0
         self.has_won = False
@@ -24,14 +27,20 @@ class Player:
 
         self.rect = Rect((0, 0, 60, 110))
         self.draw_rect = self.sprites_right[0].get_rect()
-        # self.rect.height *= 0.95
+
+        self.touching = {
+            'down': False,
+            'left': False,
+            'right': False,
+        }
 
         self.alive = True
 
     def handle_movement(self, input_state: InputState, dt: float, explosion_handler: ExplosionHandler) -> None:
         if input_state.jump:
-            if self.grounded_time_remaining > 0:
-                self.velocity.y = -800
+            if self.touching['down'] and self.has_landed:
+                self.velocity.y = -1000
+                self.has_landed = False
 
         if input_state.right.pos_edge:
             self.facing_right = True
@@ -46,15 +55,18 @@ class Player:
 
         if input_state.boost.pos_edge and self.grenade_count > 0:
             self.velocity.y -= 1600
+            self.has_landed = False
             self.grenade_count -= 1
             explosion_handler.trigger_explosion(self.rect.centerx, self.rect.bottom)
 
     def update(self, dt: float, blocks: 'list[Block]') -> None:
-        target_speed = 1500
+        wall_sliding = self.touching['left'] or self.touching['right'] and self.velocity.y > 0
+        target_speed = 300 if wall_sliding else 1500
+        gravity_strength = 5 if wall_sliding else 1.4
         if abs(self.velocity.y - target_speed) < 10:
             self.velocity.y = target_speed
         else:
-            self.velocity.y += (target_speed - self.velocity.y) * dt * 1.4
+            self.velocity.y += (target_speed - self.velocity.y) * (1 - math.exp(-dt * gravity_strength))
 
         self.rect = self.rect.move((self.velocity.x * dt, 0))
         # detect x collision with blocks
@@ -78,15 +90,30 @@ class Player:
                         self.kill()
                     if self.velocity.y >= 0:
                         self.rect.bottom = block.rect.top
-                        self.grounded_time_remaining = 0.1
+                        self.has_landed = True
                     else:  # self.velocity.y is negative
                         self.rect.top = block.rect.bottom
                     self.velocity.y = 0
                 else:
                     if prev.bottom <= block.rect.top < self.rect.bottom:
                         self.rect.bottom = block.rect.top
-                        self.grounded_time_remaining = 0.1
+                        self.has_landed = True
                         self.velocity.y = 0
+
+        # detect touches
+        for offset, name, vertical in (
+                ((20, 0), 'right', False),
+                ((-20, 0), 'left', False),
+                ((0, 20), 'down', True),
+        ):
+            self.touching[name] = False
+            collision = Rect(Vector2(self.rect.topleft) + Vector2(offset), (self.rect.width, self.rect.height))
+            for block in blocks:
+                if block.block_type == BlockType.SEMISOLID and not vertical:
+                    continue
+                if collision.colliderect(block.rect):
+                    self.touching[name] = True
+                    break
 
         if self.grounded_time_remaining > 0:
             self.grounded_time_remaining -= dt
