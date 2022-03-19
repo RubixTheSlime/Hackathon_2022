@@ -11,6 +11,7 @@ class Player:
         self.grounded_time_remaining = 0
         self.explosion_timer = -1
         self.animation_timer = 0
+        self.hasWon = False
 
         self.velocity = Vector2(0, 0)
 
@@ -90,6 +91,9 @@ class Player:
 
     def kill(self):
         self.alive = False
+
+        if self.rect.top < 0:
+            self.hasWon = True
 
     def getSprite(self):
         sprites = self.sprites_right if self.facing_right else self.sprites_left

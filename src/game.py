@@ -55,6 +55,9 @@ class Game:
             self.start_level()
         if self.level.blocks is not None:
             self.player.update(dt, self.level.blocks)
+        if self.player.hasWon:
+            # Won Level
+            self.levelNum += 1
 
     def start_level(self, level_num: int = None):
         if level_num is not None:
