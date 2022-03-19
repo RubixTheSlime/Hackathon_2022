@@ -53,6 +53,7 @@ class Player:
         # detect y collision with blocks
         for block in blocks:
             if self.rect.colliderect(block.rect):
+                self.jump_timer = 0
                 if self.velocity.y >= 0:
                     self.rect.bottom = block.rect.top
                     self.grounded_frames_remaining = 10
