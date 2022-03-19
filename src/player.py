@@ -25,6 +25,8 @@ class Player:
         self.draw_rect = self.sprites_right[0].get_rect()
         # self.rect.height *= 0.95
 
+        self.alive = True
+
     def handle_movement(self, inputState: InputState, dt):
         if inputState.jump:
             if self.grounded_time_remaining > 0:
@@ -77,6 +79,10 @@ class Player:
 
         if self.grounded_time_remaining > 0:
             self.grounded_time_remaining -= dt
+
+        # detect if dead
+        if self.rect.y > 1080:
+            self.alive = False
 
     def getSprite(self):
         sprites = self.sprites_right if self.facing_right else self.sprites_left
