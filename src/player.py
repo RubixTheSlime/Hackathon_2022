@@ -91,8 +91,8 @@ class Player:
     def draw(self, surface: Surface):
         surface.blit(self.getSprite(), self.rect)
         if self.explosion_timer >= 0:
-            if self.explosion_timer >= 4*len(self.explosion_sprites):
+            if self.explosion_timer >= 2*len(self.explosion_sprites):
                 self.explosion_timer = -1
             else:
-                surface.blit(self.explosion_sprites[self.explosion_timer//4], self.explosion_rect)
+                surface.blit(self.explosion_sprites[self.explosion_timer//2], self.explosion_rect)
                 self.explosion_timer += 1

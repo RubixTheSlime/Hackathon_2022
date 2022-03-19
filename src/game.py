@@ -15,9 +15,11 @@ class Game:
         self.input_state = InputState()
         self.running: bool = False
         self.window_surface: Surface = None
+        self.background_image = pygame.image.load('src/res/DayBackground.png')
         self.base_font: Font = None
         self.player = Player()
         self.blocks: 'list[Block]' = [ Block(left=i*Block.SIZE, top=dims['window_height']-Block.SIZE) for i in range(16) ] + [ Block(left=i*Block.SIZE + 6*Block.SIZE, top=dims['window_height'] - Block.SIZE*5) for i in range(4)]
+
 
     def run(self) -> None:
         pygame.init()
@@ -61,7 +63,9 @@ class Game:
         self.player.handle_movement(self.input_state, dt)
 
     def draw(self, dt):
-        self.window_surface.fill((255, 255, 255), self.window_surface.get_rect())
+        self.window_surface.blit(self.background_image, self.window_surface.get_rect())
+
+
         for i, block in enumerate(self.blocks):
             block.draw(self.window_surface)
         self.player.draw(self.window_surface)
