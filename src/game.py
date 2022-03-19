@@ -79,8 +79,12 @@ class Game:
                 pass
 
         self.input_state.flush()
+
+            
         
         if not self.levelNum == 0:
+            if self.input_state.restart.pos_edge:
+                self.start_level(self.levelNum)
             self.player.handle_movement(self.input_state, dt)
 
     def getBackgroundImage(self, levelNum):
