@@ -3,6 +3,7 @@ import pygame
 from pygame.font import Font
 from pygame.surface import Surface
 from BackgroundBlock import BackgroundBlock
+from explosion import Explosion, ExplosionHandler
 
 from inputstate import InputState, update_input_state
 from level import Level
@@ -23,8 +24,8 @@ class Game:
         self.base_font: Font = None
         self.player = Player()
         self.level = Level()
-        # self.blocks: 'list[Block]' = [ Block(left=i, top=dims['window_height']/Block.SIZE - 1) for i in range(16) ] + [ Block(left=i, top=dims['window_height']/Block.SIZE - 2) for i in range(6,10)]
         self.backgrounds = [ pygame.image.load(f'src/res/{name}.png').convert() for name in ['StoryBackground', 'DayBackground', 'EveningBackground', 'NightBackground', 'TheEnd' ] ]
+        self.explosion_handler = ExplosionHandler()
         self.start_level(0)
 
     def run(self) -> None:
@@ -58,10 +59,12 @@ class Game:
         if self.player.hasWon and self.levelNum < 4:
             self.levelNum += 1
             self.start_level(self.levelNum)
+        self.explosion_handler.update(dt, self.level.blocks)
 
     def start_level(self, level_num: int = None):
         if level_num is not None:
             self.levelNum = level_num
+        self.explosion_handler.clear()
         self.level.read(f'src/res/levels/level_{max(self.levelNum, 1)}.txt')
         self.player.grenade_count = self.level.bombs
         self.player.rect.x, self.player.rect.y = self.level.start * 120
@@ -80,12 +83,11 @@ class Game:
 
         self.input_state.flush()
 
-            
-        
         if not self.levelNum == 0:
             if self.input_state.restart.pos_edge:
                 self.start_level(self.levelNum)
-            self.player.handle_movement(self.input_state, dt)
+            self.player.handle_movement(self.input_state, dt, self.explosion_handler)
+
 
     def getBackgroundImage(self, levelNum):
         return self.backgrounds[levelNum]
@@ -96,5 +98,6 @@ class Game:
         if not self.levelNum == 0:
             self.level.draw(self.window_surface)
             self.window_surface.blit(self.base_font.render(f'Bombs - {self.player.grenade_count}', True, (0, 0, 0)), (50, 40))
-            self.player.draw(self.window_surface, self.level)
+            self.player.draw(self.window_surface)
+            self.explosion_handler.draw(self.window_surface)
         pygame.display.flip()
