@@ -2,8 +2,8 @@ bombs:5
       XXXXXXXXXX|
  #              |
    #            |
-     #     X _  |
-XXXXXXXXX       |
+     #         |
+XXXXXXXXX  X _  |
     X        #  |
           #     |
    #S  #        |
