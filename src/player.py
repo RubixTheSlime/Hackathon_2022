@@ -15,6 +15,8 @@ class Player:
 
         self.grenade_count = 2
 
+        self.hasWon = False
+
         self.velocity = Vector2(0, 0)
 
         self.explosion_sprites = [ pygame.image.load(f'src/res/Explode{i}.png').convert_alpha() for i in range(1, 7) ]
@@ -86,6 +88,9 @@ class Player:
         # detect if dead
         if self.rect.y > 1080:
             self.alive = False
+
+        if self.rect.top < 0:
+            self.hasWon = True
 
     def getSprite(self):
         sprites = self.sprites_right if self.facing_right else self.sprites_left

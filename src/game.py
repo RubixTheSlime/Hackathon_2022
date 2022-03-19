@@ -55,6 +55,9 @@ class Game:
         if self.player.alive == False:
             self.levelNum = 0
         self.player.update(dt, self.level.blocks)
+        if self.player.hasWon:
+            # Won Level
+            self.levelNum += 1
 
     def handle_events(self, dt):
         for event in pygame.event.get():
