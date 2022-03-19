@@ -12,6 +12,7 @@ class Player:
         self.explosion_timer = -1
         self.animation_timer = 0
         self.hasWon = False
+        self.grenade_count = 0
 
         self.velocity = Vector2(0, 0)
 

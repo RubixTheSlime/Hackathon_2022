@@ -19,13 +19,13 @@ class Game:
         pygame.init()
         self.input_state = InputState()
         self.running: bool = False
-        self.window_surface = pygame.display.set_mode((dims['window_width'], dims['window_height']))
+        self.window_surface = pygame.display.set_mode((dims['window_width'], dims['window_height']), pygame.FULLSCREEN)
         self.base_font: Font = None
         self.player = Player()
         self.level = Level()
         # self.blocks: 'list[Block]' = [ Block(left=i, top=dims['window_height']/Block.SIZE - 1) for i in range(16) ] + [ Block(left=i, top=dims['window_height']/Block.SIZE - 2) for i in range(6,10)]
         self.backgrounds = [ pygame.image.load(f'src/res/{name}.png').convert() for name in ['StoryBackground', 'DayBackground', 'EveningBackground', 'NightBackground', 'TheEnd' ] ]
-        self.start_level(1)
+        self.start_level(0)
 
     def run(self) -> None:
         self.base_font = Font(None, dims['default_font_size'])
