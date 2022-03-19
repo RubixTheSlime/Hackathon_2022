@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 import pygame
 from pygame.event import Event
 
@@ -81,4 +79,3 @@ def update_input_state(input_state: InputState, event: Event):
         return
 
     input_state.state[button].set(event.type == pygame.KEYDOWN)
-

@@ -1,31 +1,34 @@
-from time import sleep
 import pygame
 from pygame.font import Font
 from pygame.surface import Surface
-from BackgroundBlock import BackgroundBlock
 
+from explosion import ExplosionHandler
 from inputstate import InputState, update_input_state
 from level import Level
+from player import Player
 from res.dims import dims
 from res.string import strings
-from player import Player
-
-from Block import Block
 
 frame = 0
+
 
 class Game:
     def __init__(self):
         pygame.init()
         self.input_state = InputState()
         self.running: bool = False
-        self.window_surface = pygame.display.set_mode((dims['window_width'], dims['window_height'])) #, pygame.FULLSCREEN
+        self.window_surface: Surface = pygame.display.set_mode(
+            (dims['window_width'], dims['window_height']))  # , pygame.FULLSCREEN
         self.base_font: Font = None
         self.player = Player()
         self.level = Level()
-        self.transition_frame = -1
-        # self.blocks: 'list[Block]' = [ Block(left=i, top=dims['window_height']/Block.SIZE - 1) for i in range(16) ] + [ Block(left=i, top=dims['window_height']/Block.SIZE - 2) for i in range(6,10)]
-        self.backgrounds = [ pygame.image.load(f'src/res/{name}.png').convert() for name in ['StoryBackground', 'DayBackground', 'EveningBackground', 'NightBackground', 'TheEnd' ] ]
+        self.level_num: int = 0
+        self.transition_frame: int = -1
+        self.explosion_handler = ExplosionHandler()
+
+        self.backgrounds: 'list[Surface]' = [pygame.image.load(f'src/res/{name}.png').convert() for name in
+                                             ['StoryBackground', 'DayBackground', 'EveningBackground',
+                                              'NightBackground', 'TheEnd']]
         self.start_level(0)
 
     def run(self) -> None:
@@ -36,7 +39,7 @@ class Game:
         self.running = True
 
         while self.running:
-            dt = 1/dims['fps']
+            dt = 1 / dims['fps']
             self.handle_events(dt)
             if self.input_state.quit:
                 self.stop()
@@ -46,30 +49,32 @@ class Game:
 
         pygame.quit()
 
-    def stop(self):
+    def stop(self) -> None:
         self.running = False
 
-    def update(self, dt):
-        if self.levelNum == 0 and self.input_state.jump:
+    def update(self, dt: float) -> None:
+        if self.level_num == 0 and self.input_state.jump:
             self.start_level(1)
         if not self.player.alive:
             self.start_level()
         if self.level.blocks is not None:
             self.player.update(dt, self.level.blocks)
-        if self.player.hasWon and self.levelNum < 4:
+            self.explosion_handler.update(dt, self.level.blocks)
+        if self.player.has_won and self.level_num < 4:
             self.start_transition()
-            self.levelNum += 1
-            self.start_level(self.levelNum)
+            self.level_num += 1
+            self.start_level(self.level_num)
 
-    def start_level(self, level_num: int = None):
+    def start_level(self, level_num: int = None) -> None:
         if level_num is not None:
-            self.levelNum = level_num
-        self.level.read(f'src/res/levels/level_{max(self.levelNum, 1)}.txt')
+            self.level_num = level_num
+        self.explosion_handler.clear()
+        self.level.read(f'src/res/levels/level_{max(self.level_num, 1)}.txt')
         self.player.grenade_count = self.level.bombs
         self.player.rect.x, self.player.rect.y = self.level.start * 120
         self.player.reset()
 
-    def handle_events(self, dt):
+    def handle_events(self, dt: float) -> None:
         for event in pygame.event.get():
             try:
                 {
@@ -84,35 +89,35 @@ class Game:
 
         if self.transition_frame != -1 and self.input_state.jump.pos_edge:
             self.transition_frame = -1
-        elif not self.levelNum == 0:
+        elif not self.level_num == 0:
             if self.input_state.restart.pos_edge:
-                self.start_level(self.levelNum)
-            self.player.handle_movement(self.input_state, dt)
+                self.start_level(self.level_num)
+            self.player.handle_movement(self.input_state, dt, self.explosion_handler)
 
-    def getBackgroundImage(self, levelNum):
-        return self.backgrounds[levelNum]
+    def get_background_image(self, level_num: int) -> Surface:
+        return self.backgrounds[level_num]
         #         background = self.backgrounds[0]
-        # if 1 <= levelNum <= 3:
+        # if 1 <= level_num <= 3:
         #     background = self.backgrounds[1]
-        # elif 4 <= levelNum <= 6:
+        # elif 4 <= level_num <= 6:
         #     background = self.backgrounds[2]
-        # elif 7 <= levelNum <= 9:
+        # elif 7 <= level_num <= 9:
         #     background = self.backgrounds[3]
-        # elif levelNum == 10:
+        # elif level_num == 10:
         #     background = self.backgrounds[4]
         # return background
-        
 
-    def start_transition(self):
+    def start_transition(self) -> None:
         self.transition_frame = 0
-    
-    def draw(self, dt):
-        if self.transition_frame == -1:
-            self.window_surface.blit(self.getBackgroundImage(self.levelNum), (0,0))
 
-            if not self.levelNum == 0:
+    def draw(self, dt: float) -> None:
+        if self.transition_frame == -1:
+            self.window_surface.blit(self.get_background_image(self.level_num), (0, 0))
+
+            if not self.level_num == 0:
                 self.level.draw(self.window_surface)
-                self.window_surface.blit(self.base_font.render(f'Bombs - {self.player.grenade_count}', True, (0, 0, 0)), (50, 40))
+                self.window_surface.blit(self.base_font.render(f'Bombs - {self.player.grenade_count}', True, (0, 0, 0)),
+                                         (50, 40))
                 self.player.draw(self.window_surface)
                 self.explosion_handler.draw(self.window_surface)
         else:
@@ -121,5 +126,7 @@ class Game:
             else:
                 self.transition_frame += 1
                 self.window_surface.fill((52, 89, 153))
-                self.window_surface.blit(self.base_font.render(f'Finished level {self.levelNum}!', True, (255, 255, 255)), (-60+self.transition_frame, dims['window_height']-200))
+                self.window_surface.blit(
+                    self.base_font.render(f'Finished level {self.level_num}!', True, (255, 255, 255)),
+                    (-60 + self.transition_frame, dims['window_height'] - 200))
         pygame.display.flip()

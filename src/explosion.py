@@ -1,10 +1,8 @@
-from math import ceil
-
 import pygame
 from pygame.rect import Rect
 from pygame.surface import Surface
 
-from Block import BlockType
+from block import BlockType
 
 
 class ExplosionHandler:
@@ -29,7 +27,7 @@ class ExplosionHandler:
 
 
 class Explosion:
-    def __init__(self, x, y):
+    def __init__(self, x: int, y: int):
         self.sprites = [pygame.image.load(f'src/res/Explode{i}.png').convert_alpha() for i in range(1, 7)]
         self.rect: Rect = self.sprites[0].get_rect()
         self.rect.centerx, self.rect.centery = x, y
@@ -40,7 +38,9 @@ class Explosion:
     def update(self, dt, blocks):
         self.timer += dt*15
         self.cull = self.timer >= self.end_time
-        collision_rect = Rect(0, 0, self.rect.width * self.timer / self.end_time, self.rect.height * self.timer / self.end_time)
+        collision_rect = Rect(0, 0,
+                              self.rect.width * self.timer / self.end_time,
+                              self.rect.height * self.timer / self.end_time)
         collision_rect.centerx, collision_rect.centery = self.rect.centerx, self.rect.centery
         for block in blocks:
             if collision_rect.colliderect(block.rect) and block.block_type == BlockType.FRAGILE:
@@ -49,4 +49,3 @@ class Explosion:
     def draw(self, surface: Surface):
         if not self.cull:
             surface.blit(self.sprites[int(self.timer)], self.rect)
-
