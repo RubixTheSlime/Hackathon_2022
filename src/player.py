@@ -9,11 +9,8 @@ from inputstate import InputState
 class Player:
     def __init__(self):
         self.grounded_time_remaining = 0
-        self.jump_timer = 0
         self.explosion_timer = -1
         self.animation_timer = 0
-
-        self.grenade_count = 2
 
         self.velocity = Vector2(0, 0)
 
@@ -104,7 +101,6 @@ class Player:
         self.animation_timer %= animationLength*len(sprites)
         return sprite
 
-
     def draw(self, surface: Surface):
         self.draw_rect.centerx = self.rect.centerx
         self.draw_rect.bottom = self.rect.bottom
@@ -115,3 +111,11 @@ class Player:
             else:
                 surface.blit(self.explosion_sprites[self.explosion_timer//4], self.explosion_rect)
                 self.explosion_timer += 1
+
+    def reset(self):
+        self.grounded_time_remaining = 0
+        self.explosion_timer = -1
+        self.animation_timer = 0
+
+        self.velocity = Vector2(0, 0)
+        self.alive = True
