@@ -1,6 +1,7 @@
 import pygame
 from pygame.font import Font
 from pygame.surface import Surface
+from BackgroundBlock import BackgroundBlock
 
 from inputstate import InputState, update_input_state
 from res.dims import dims
@@ -62,7 +63,7 @@ class Game:
 
     def draw(self, dt):
         self.window_surface.fill((255, 255, 255), self.window_surface.get_rect())
-        for i, block in enumerate(self.blocks):
+        for block in self.blocks:
             block.draw(self.window_surface)
         self.player.draw(self.window_surface)
         pygame.display.flip()
