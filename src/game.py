@@ -18,7 +18,7 @@ class Game:
         self.input_state = InputState()
         self.running: bool = False
         self.window_surface: Surface = pygame.display.set_mode(
-            (dims['window_width'], dims['window_height']))  # , pygame.FULLSCREEN
+            (dims['window_width'], dims['window_height']))
         self.base_font: Font = None
         self.player = Player()
         self.level = Level()
@@ -95,17 +95,17 @@ class Game:
             self.player.handle_movement(self.input_state, dt, self.explosion_handler)
 
     def get_background_image(self, level_num: int) -> Surface:
-        return self.backgrounds[level_num]
-        #         background = self.backgrounds[0]
-        # if 1 <= level_num <= 3:
-        #     background = self.backgrounds[1]
-        # elif 4 <= level_num <= 6:
-        #     background = self.backgrounds[2]
-        # elif 7 <= level_num <= 9:
-        #     background = self.backgrounds[3]
-        # elif level_num == 10:
-        #     background = self.backgrounds[4]
-        # return background
+        # return self.backgrounds[level_num]
+        background = self.backgrounds[0]
+        if 1 <= level_num <= 3:
+            background = self.backgrounds[1]
+        elif 4 <= level_num <= 6:
+            background = self.backgrounds[2]
+        elif 7 <= level_num <= 9:
+            background = self.backgrounds[3]
+        elif level_num == 10:
+            background = self.backgrounds[4]
+        return background
 
     def start_transition(self) -> None:
         self.transition_frame = 0

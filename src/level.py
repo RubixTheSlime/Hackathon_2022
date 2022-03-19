@@ -36,7 +36,7 @@ class Level:
                 row += 1
 
     def draw(self, surface: Surface) -> None:
-        if self.level < 4:
+        if self.level < 10:
             for row in range(9):
                 for col in range(8):
                     surface.blit(self.background_sprite, ((col+4)*Block.SIZE, row*Block.SIZE))
