@@ -1,6 +1,7 @@
 import pygame
 from pygame.math import Vector2
 from pygame.surface import Surface
+import re
 
 from block import Block, BlockType
 
@@ -14,7 +15,7 @@ class Level:
         self.level = 0
 
     def read(self, filename: str) -> None:
-        self.level = int(filename.strip('.txt')[-1])
+        self.level = int(re.search(r'\d+', filename).group())
         self.blocks = []
         with open(filename, 'r') as f:
             row = 0
@@ -36,7 +37,7 @@ class Level:
                 row += 1
 
     def draw(self, surface: Surface) -> None:
-        if self.level < 4:
+        if self.level < 10:
             for row in range(9):
                 for col in range(8):
                     surface.blit(self.background_sprite, ((col+4)*Block.SIZE, row*Block.SIZE))
