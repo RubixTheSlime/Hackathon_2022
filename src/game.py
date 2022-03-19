@@ -10,23 +10,23 @@ from player import Player
 
 from Block import Block
 
+frame = 0
 
 class Game:
     def __init__(self):
+        pygame.init()
         self.input_state = InputState()
         self.running: bool = False
-        self.window_surface: Surface = None
-        self.background_image = pygame.image.load('src/res/DayBackground.png')
+        self.window_surface = pygame.display.set_mode((dims['window_width'], dims['window_height']))
+        self.background_image = pygame.image.load('src/res/DayBackground.png').convert()
         self.base_font: Font = None
         self.player = Player()
         self.blocks: 'list[Block]' = [ Block(left=i*Block.SIZE, top=dims['window_height']-Block.SIZE) for i in range(16) ] + [ Block(left=i*Block.SIZE + 6*Block.SIZE, top=dims['window_height'] - Block.SIZE*2) for i in range(4)]
-        self.backgrounds = [pygame.image.load('src/res/StoryBackground.png'), pygame.image.load('src/res/DayBackground.png'), pygame.image.load('src/res/EveningBackground.png'), pygame.image.load('src/res/NightBackground.png'), pygame.image.load('src/res/TheEnd.png')]
+        self.backgrounds = [pygame.image.load('src/res/StoryBackground.png').convert(), pygame.image.load('src/res/DayBackground.png').convert(), pygame.image.load('src/res/EveningBackground.png').convert(), pygame.image.load('src/res/NightBackground.png').convert(), pygame.image.load('src/res/TheEnd.png').convert()]
         self.levelNum = 1
 
     def run(self) -> None:
-        pygame.init()
         self.base_font = Font(None, dims['default_font_size'])
-        self.window_surface = pygame.display.set_mode((dims['window_width'], dims['window_height']))
         pygame.display.set_caption(strings['window_title'])
         clock = pygame.time.Clock()
 
@@ -68,15 +68,8 @@ class Game:
         return self.backgrounds[levelNum]
     
     def draw(self, dt):
-<<<<<<< HEAD
-        self.window_surface.fill((255, 255, 255), self.window_surface.get_rect())
+        self.window_surface.blit(self.getBackgroundImage(self.levelNum), (0, frame))
         for block in self.blocks:
-=======
-        self.window_surface.blit(self.getBackgroundImage(self.levelNum), (0,0))
-
-
-        for i, block in enumerate(self.blocks):
->>>>>>> 153b3af6804115c9d71d82c519beb7d43b812c88
             block.draw(self.window_surface)
         self.player.draw(self.window_surface)
         pygame.display.flip()

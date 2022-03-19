@@ -5,7 +5,7 @@ class BackgroundBlock:
     SIZE = 120
 
     def __init__(self, top=0, left=0):
-        self.sprite = pygame.image.load('src/res/BackgroundBlock.png')
+        self.sprite = pygame.image.load('src/res/BackgroundBlock.png').convert()
         self.center = (top, left)
 
     def draw(self, surface: Surface):
