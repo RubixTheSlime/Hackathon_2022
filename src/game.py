@@ -24,6 +24,7 @@ class Game:
         while self.running:
             self.handle_events()
             self.draw()
+            clock.tick(dims['fps'])
 
     def stop(self):
         self.running = False
