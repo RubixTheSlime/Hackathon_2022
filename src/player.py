@@ -17,6 +17,7 @@ class Player:
         self.animation_timer = 0
         self.has_won = False
         self.grenade_count = 0
+        self.has_stopped_initial_jumping = False
 
         self.velocity = Vector2(0, 0)
 
@@ -37,10 +38,13 @@ class Player:
         self.alive = True
 
     def handle_movement(self, input_state: InputState, dt: float, explosion_handler: ExplosionHandler) -> None:
-        if input_state.jump:
+        if input_state.jump and self.has_stopped_initial_jumping:
             if self.touching['down'] and self.has_landed:
                 self.velocity.y = -1000
                 self.has_landed = False
+
+        if not input_state.jump:
+            self.has_stopped_initial_jumping = True
 
         if input_state.right.pos_edge:
             self.facing_right = True
@@ -146,6 +150,7 @@ class Player:
     def reset(self):
         self.grounded_time_remaining = 0
         self.animation_timer = 0
+        self.has_stopped_initial_jumping = False
 
         self.velocity = Vector2(0, 0)
         self.alive = True

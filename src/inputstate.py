@@ -1,3 +1,5 @@
+import re
+
 import pygame
 from pygame.event import Event
 
@@ -54,28 +56,45 @@ class InputState:
         for button in self.state.values():
             button.advance()
 
+    def handle_input_event(self, event: Event):
+        try:
+            button = {
+                pygame.K_w: 'jump',
+                pygame.K_UP: 'jump',
+                pygame.K_s: 'down',
+                pygame.K_DOWN: 'down',
+                pygame.K_a: 'left',
+                pygame.K_LEFT: 'left',
+                pygame.K_d: 'right',
+                pygame.K_RIGHT: 'right',
+                pygame.K_SPACE: 'jump',
+                pygame.K_k: 'boost',
+                pygame.K_c: 'boost',
+                pygame.K_e: 'boost',
+                pygame.K_ESCAPE: 'quit',
+                pygame.K_r: 'restart',
+            }[event.key]
 
-def update_input_state(input_state: InputState, event: Event):
-    try:
-        button = {
-            pygame.K_w: 'jump',
-            pygame.K_UP: 'jump',
-            pygame.K_s: 'down',
-            pygame.K_DOWN: 'down',
-            pygame.K_a: 'left',
-            pygame.K_LEFT: 'left',
-            pygame.K_d: 'right',
-            pygame.K_RIGHT: 'right',
-            pygame.K_SPACE: 'jump',
-            pygame.K_k: 'boost',
-            pygame.K_c: 'boost',
-            pygame.K_e: 'boost',
-            pygame.K_ESCAPE: 'quit',
-            pygame.K_r: 'restart',
-        }[event.key]
+        except KeyError:
+            # a key that we're not using, fail gracefully
+            return
 
-    except KeyError:
-        # a key that we're not using, fail gracefully
-        return
+        self.state[button].set(event.type == pygame.KEYDOWN)
 
-    input_state.state[button].set(event.type == pygame.KEYDOWN)
+    def handle_joystick_button_event(self, event: Event):
+        try:
+            button = {
+                pygame.CONTROLLER_BUTTON_A: 'jump',
+                pygame.CONTROLLER_BUTTON_B: 'boost',
+                pygame.CONTROLLER_BUTTON_START: 'restart',
+            }[event.button]
+        except KeyError:
+            return
+        self.state[button].set(event.type == pygame.JOYBUTTONDOWN)
+
+    def handle_joystick_hat_event(self, event: Event):
+        print(event.value)
+        self.state['right'].set(event.value[0] == 1)
+        self.state['down'].set(event.value[1] == -1)
+        self.state['left'].set(event.value[0] == -1)
+

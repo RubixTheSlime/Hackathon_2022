@@ -1,9 +1,10 @@
 import pygame
 from pygame.font import Font
+from pygame.joystick import Joystick
 from pygame.surface import Surface
 
 from explosion import ExplosionHandler
-from inputstate import InputState, update_input_state
+from inputstate import InputState
 from level import Level
 from player import Player
 from res.dims import dims
@@ -15,7 +16,8 @@ frame = 0
 class Game:
     def __init__(self):
         pygame.init()
-        self.input_state = InputState()
+        pygame.joystick.init()
+        self.input_state: InputState = InputState()
         self.running: bool = False
         self.window_surface: Surface = pygame.display.set_mode(
             (dims['window_width'], dims['window_height']))
@@ -29,6 +31,12 @@ class Game:
         self.backgrounds: 'list[Surface]' = [pygame.image.load(f'src/res/{name}.png').convert() for name in
                                              ['StoryBackground', 'DayBackground', 'EveningBackground',
                                               'NightBackground', 'TheEnd']]
+        self.grenade_sprite = pygame.image.load('src/res/Grenade.png').convert_alpha()
+        self.joysticks = []
+        for i in range(pygame.joystick.get_count()):
+            j = Joystick(i)
+            j.init()
+            self.joysticks.append(j)
         self.start_level(0)
 
     def run(self) -> None:
@@ -78,8 +86,11 @@ class Game:
             try:
                 {
                     pygame.QUIT: self.stop,
-                    pygame.KEYDOWN: lambda: update_input_state(self.input_state, event),
-                    pygame.KEYUP: lambda: update_input_state(self.input_state, event),
+                    pygame.KEYDOWN: lambda: self.input_state.handle_input_event(event),
+                    pygame.KEYUP: lambda: self.input_state.handle_input_event(event),
+                    pygame.JOYBUTTONUP: lambda: self.input_state.handle_joystick_button_event(event),
+                    pygame.JOYBUTTONDOWN: lambda: self.input_state.handle_joystick_button_event(event),
+                    pygame.JOYHATMOTION: lambda: self.input_state.handle_joystick_hat_event(event),
                 }[event.type]()
             except KeyError:
                 pass
@@ -115,8 +126,8 @@ class Game:
 
             if not self.level_num == 0:
                 self.level.draw(self.window_surface)
-                self.window_surface.blit(self.base_font.render(f'Bombs - {self.player.grenade_count}', True, (0, 0, 0)),
-                                         (50, 40))
+                for i in range(self.player.grenade_count):
+                    self.window_surface.blit(self.grenade_sprite, (i * (self.grenade_sprite.get_rect().width + 15), 0))
                 self.player.draw(self.window_surface)
                 self.explosion_handler.draw(self.window_surface)
         else:
@@ -126,6 +137,6 @@ class Game:
                 self.transition_frame += 1
                 self.window_surface.fill((52, 89, 153))
                 self.window_surface.blit(
-                    self.base_font.render(f'Finished level {self.level_num}!', True, (255, 255, 255)),
+                    self.base_font.render(f'Finished level {self.level_num - 1}!', True, (255, 255, 255)),
                     (-60 + self.transition_frame, dims['window_height'] - 200))
         pygame.display.flip()
