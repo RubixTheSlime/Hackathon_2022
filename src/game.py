@@ -19,7 +19,7 @@ class Game:
         pygame.init()
         self.input_state = InputState()
         self.running: bool = False
-        self.window_surface = pygame.display.set_mode((dims['window_width'], dims['window_height']), pygame.FULLSCREEN)
+        self.window_surface = pygame.display.set_mode((dims['window_width'], dims['window_height'])) #, pygame.FULLSCREEN
         self.base_font: Font = None
         self.player = Player()
         self.level = Level()
