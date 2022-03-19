@@ -13,7 +13,8 @@ class Level:
     def read(self, filename: str):
         self.blocks = []
         with open(filename, 'r') as f:
-            for row, line in enumerate(f.readlines()):
+            row = 0
+            for line in f.readlines():
                 if line.startswith('bombs:'):
                     self.bombs = int(line[6:])
                     continue
@@ -26,6 +27,7 @@ class Level:
                         self.blocks.append(Block(col, row, fragile=True))
                     if symbol == 'S':
                         self.start = Vector2(col, row)
+                row += 1
 
     def draw(self, surface: Surface):
         for i, block in enumerate(self.blocks):
