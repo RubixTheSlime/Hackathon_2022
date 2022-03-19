@@ -45,6 +45,13 @@ class Level:
                         self.start = Vector2(col, row)
                 row += 1
 
+    def copy_from(self, other: 'Level'):
+        self.blocks = [Block(copy_from=block) for block in other.blocks]
+        self.background_blocks = [BackgroundBlock(copy_from=block) for block in other.background_blocks]
+        self.start = other.start
+        self.level = other.level
+        self.bombs = other.bombs
+
     def draw(self, surface: Surface) -> None:
         for block in self.background_blocks:
             block.draw(surface)

@@ -97,3 +97,8 @@ class InputState:
         self.state['down'].set(event.value[1] == -1)
         self.state['left'].set(event.value[0] == -1)
 
+    def handle_joystic_axis_event(self, event: Event):
+        pass
+        # self.state['right'].set(event.value[0] > 0.3)
+        # self.state['left'].set(event.value[0] < -0.3)
+

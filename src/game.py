@@ -1,3 +1,5 @@
+import copy
+
 import pygame
 from pygame.font import Font
 from pygame.joystick import Joystick
@@ -24,6 +26,7 @@ class Game:
         self.base_font: Font = None
         self.player = Player()
         self.level = Level()
+        self.level_base = Level()
         self.level_num: int = 0
         self.transition_frame: int = -1
         self.explosion_handler = ExplosionHandler()
@@ -69,14 +72,14 @@ class Game:
             self.explosion_handler.update(dt, self.level.blocks)
         if self.player.has_won and self.level_num < 10:
             self.start_transition()
-            self.level_num += 1
-            self.start_level(self.level_num)
+            self.start_level(self.level_num + 1)
 
     def start_level(self, level_num: int = None) -> None:
         if level_num is not None:
             self.level_num = level_num
+            self.level_base.read(f'src/res/levels/level_{max(self.level_num, 1)}.txt')
+        self.level.copy_from(self.level_base)
         self.explosion_handler.clear()
-        self.level.read(f'src/res/levels/level_{max(self.level_num, 1)}.txt')
         self.player.grenade_count = self.level.bombs
         self.player.rect.x, self.player.rect.y = self.level.start * 120
         self.player.reset()
@@ -91,6 +94,7 @@ class Game:
                     pygame.JOYBUTTONUP: lambda: self.input_state.handle_joystick_button_event(event),
                     pygame.JOYBUTTONDOWN: lambda: self.input_state.handle_joystick_button_event(event),
                     pygame.JOYHATMOTION: lambda: self.input_state.handle_joystick_hat_event(event),
+                    # pygame.JOYAXISMOTION: lambda: self.input_state.handle_joystick_axis_event(event),
                 }[event.type]()
             except KeyError:
                 pass
@@ -101,7 +105,7 @@ class Game:
             self.transition_frame = -1
         elif not self.level_num == 0:
             if self.input_state.restart.pos_edge:
-                self.start_level(self.level_num)
+                self.start_level()
             self.player.handle_movement(self.input_state, dt, self.explosion_handler)
 
     def get_background_image(self, level_num: int) -> Surface:

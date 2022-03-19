@@ -128,7 +128,7 @@ class Player:
         if self.rect.y > 1080:
             self.kill()
 
-        if self.rect.y <= 0:
+        if self.rect.bottom <= 0:
             self.has_won = True
 
     def kill(self) -> None:
