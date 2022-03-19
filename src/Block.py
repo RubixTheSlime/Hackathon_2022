@@ -7,7 +7,7 @@ class Block:
     
     def __init__(self, left=0, top=0):
         self.sprite = pygame.image.load('src/res/Block.png')
-        self.rect = self.sprite.get_rect(left=left, top=top, width = 120, height = 120)
+        self.rect = self.sprite.get_rect(left=left, top=top, width = Block.SIZE, height = Block.SIZE)
 
     def update(self):
         pass
