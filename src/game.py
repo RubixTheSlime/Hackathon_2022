@@ -18,7 +18,7 @@ class Game:
         self.background_image = pygame.image.load('src/res/DayBackground.png')
         self.base_font: Font = None
         self.player = Player()
-        self.blocks: 'list[Block]' = [ Block(left=i*Block.SIZE, top=dims['window_height']-Block.SIZE) for i in range(16) ] + [ Block(left=i*Block.SIZE + 6*Block.SIZE, top=dims['window_height'] - Block.SIZE*5) for i in range(4)]
+        self.blocks: 'list[Block]' = [ Block(left=i*Block.SIZE, top=dims['window_height']-Block.SIZE) for i in range(16) ] + [ Block(left=i*Block.SIZE + 6*Block.SIZE, top=dims['window_height'] - Block.SIZE*2) for i in range(4)]
 
 
     def run(self) -> None:

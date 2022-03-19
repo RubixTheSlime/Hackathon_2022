@@ -21,7 +21,8 @@ class Player:
         self.sprites_left = [ pygame.transform.flip(surface, True, False) for surface in self.sprites_right ]
         self.facing_right = True
 
-        self.rect = self.sprites_right[0].get_rect(center=(100, 100))
+        self.rect = Rect((0, 0, 60, 110))
+        self.draw_rect = self.sprites_right[0].get_rect()
         # self.rect.height *= 0.95
 
     def handle_movement(self, inputState: InputState, dt):
@@ -42,7 +43,7 @@ class Player:
 
         if inputState.boost.pos_edge:
             self.explosion_timer = 0
-            self.velocity.y -= 2200
+            self.velocity.y -= 1600
             self.explosion_rect.centerx = self.rect.centerx
             self.explosion_rect.centery = self.rect.bottom
 
@@ -89,7 +90,9 @@ class Player:
 
 
     def draw(self, surface: Surface):
-        surface.blit(self.getSprite(), self.rect)
+        self.draw_rect.centerx = self.rect.centerx
+        self.draw_rect.bottom = self.rect.bottom
+        surface.blit(self.getSprite(), self.draw_rect)
         if self.explosion_timer >= 0:
             if self.explosion_timer >= 2*len(self.explosion_sprites):
                 self.explosion_timer = -1
