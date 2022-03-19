@@ -19,7 +19,8 @@ class Game:
         self.base_font: Font = None
         self.player = Player()
         self.blocks: 'list[Block]' = [ Block(left=i*Block.SIZE, top=dims['window_height']-Block.SIZE) for i in range(16) ] + [ Block(left=i*Block.SIZE + 6*Block.SIZE, top=dims['window_height'] - Block.SIZE*2) for i in range(4)]
-
+        self.backgrounds = [pygame.image.load('src/res/StoryBackground.png'), pygame.image.load('src/res/DayBackground.png'), pygame.image.load('src/res/EveningBackground.png'), pygame.image.load('src/res/NightBackground.png'), pygame.image.load('src/res/TheEnd.png')]
+        self.levelNum = 1
 
     def run(self) -> None:
         pygame.init()
@@ -62,8 +63,11 @@ class Game:
         
         self.player.handle_movement(self.input_state, dt)
 
+    def getBackgroundImage(self, levelNum):
+        return self.backgrounds[levelNum]
+    
     def draw(self, dt):
-        self.window_surface.blit(self.background_image, self.window_surface.get_rect())
+        self.window_surface.blit(self.getBackgroundImage(self.levelNum), (0,0))
 
 
         for i, block in enumerate(self.blocks):
