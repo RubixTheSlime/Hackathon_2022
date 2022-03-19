@@ -60,7 +60,7 @@ class Game:
         if self.level.blocks is not None:
             self.player.update(dt, self.level.blocks)
             self.explosion_handler.update(dt, self.level.blocks)
-        if self.player.has_won and self.level_num < 4:
+        if self.player.has_won and self.level_num < 10:
             self.start_transition()
             self.level_num += 1
             self.start_level(self.level_num)
