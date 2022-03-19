@@ -4,6 +4,8 @@ import pygame
 from pygame.rect import Rect
 from pygame.surface import Surface
 
+from Block import BlockType
+
 
 class ExplosionHandler:
     def __init__(self):
@@ -41,7 +43,7 @@ class Explosion:
         collision_rect = Rect(0, 0, self.rect.width * self.timer / self.end_time, self.rect.height * self.timer / self.end_time)
         collision_rect.centerx, collision_rect.centery = self.rect.centerx, self.rect.centery
         for block in blocks:
-            if collision_rect.colliderect(block.rect) and block.fragile:
+            if collision_rect.colliderect(block.rect) and block.block_type == BlockType.FRAGILE:
                 blocks.remove(block)
 
     def draw(self, surface: Surface):

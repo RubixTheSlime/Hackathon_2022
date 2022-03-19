@@ -1,23 +1,32 @@
+from enum import Enum
+
 import pygame
 from pygame import Vector2
 from pygame import Surface
 
 
+class BlockType(Enum):
+    NORMAL = 1
+    DEATH = 2
+    FRAGILE = 3
+    SEMISOLID = 4
+
+
 class Block:
+    block_type_name = {
+        BlockType.NORMAL: "Block",
+        BlockType.DEATH: "DeathBlock",
+        BlockType.FRAGILE: "BreakableBlock",
+        BlockType.SEMISOLID: "SemiSolid",
+    }
+
     SIZE = 120
 
-    def __init__(self, left, top, instant_death: bool = False, fragile: bool = False, semisolid = False):
-        self.instant_death = instant_death
-        self.fragile = fragile
-        self.semisolid = semisolid
-        self.sprite = pygame.image.load(f'src/res/{"DeathBlock" if instant_death else "BreakableBlock" if fragile else "SemiSolid" if semisolid else "Block"}.png').convert()
+    def __init__(self, left, top, block_type: BlockType):
+        self.block_type = block_type
+        self.sprite = pygame.image.load(f'src/res/{Block.block_type_name[block_type]}.png').convert()
         self.rect = self.sprite.get_rect(left=left * Block.SIZE, top=top * Block.SIZE, width=Block.SIZE,
                                          height=Block.SIZE)
-
-    # This code was unused, but saved for if we want to try to make blocks breakable
-    # def checkIfBroken(self, playerX, playerY):
-    #     if self.fragile and playerY > self.rect.top and playerY < self.rect.top + 30 and playerX > self.rect.left and playerX < self.rect.left + Block.SIZE:
-    #         print("Break!")
 
     def update(self):
         pass

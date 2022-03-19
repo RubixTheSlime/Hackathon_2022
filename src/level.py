@@ -1,7 +1,7 @@
 from pygame.math import Vector2
 from pygame.surface import Surface
 
-from Block import Block
+from Block import Block, BlockType
 
 
 class Level:
@@ -20,13 +20,13 @@ class Level:
                     continue
                 for col, symbol in enumerate(line):
                     if symbol == '#':
-                        self.blocks.append(Block(col, row))
+                        self.blocks.append(Block(col, row, BlockType.NORMAL))
                     if symbol == 'X':
-                        self.blocks.append(Block(col, row, instant_death=True))
+                        self.blocks.append(Block(col, row, BlockType.DEATH))
                     if symbol == '~':
-                        self.blocks.append(Block(col, row, fragile=True))
+                        self.blocks.append(Block(col, row, BlockType.FRAGILE))
                     if symbol == '_':
-                        self.blocks.append(Block(col, row, semisolid=True))
+                        self.blocks.append(Block(col, row, BlockType.SEMISOLID))
                     if symbol == 'S':
                         self.start = Vector2(col, row)
                 row += 1

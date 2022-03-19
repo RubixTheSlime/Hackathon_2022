@@ -3,7 +3,9 @@ from pygame import Vector2
 from pygame.rect import Rect
 from pygame.surface import Surface
 
+import Block
 from inputstate import InputState
+from Block import BlockType
 from level import Level
 
 
@@ -57,8 +59,8 @@ class Player:
         self.rect = self.rect.move((self.velocity.x*dt, 0))
         # detect x collision with blocks
         for block in blocks:
-            if self.rect.colliderect(block.rect) and not block.semisolid:
-                if block.instant_death:
+            if self.rect.colliderect(block.rect) and block.block_type != BlockType.SEMISOLID:
+                if block.block_type == BlockType.DEATH:
                     self.kill()
                 if self.velocity.x > 0:
                     self.rect.right = block.rect.left
@@ -70,20 +72,21 @@ class Player:
         self.rect = self.rect.move((0, self.velocity.y*dt))
         # detect y collision with blocks
         for block in blocks:
-            if self.rect.colliderect(block.rect) and not block.semisolid:
-                if block.instant_death:
-                    self.kill()
-                if self.velocity.y >= 0:
-                    self.rect.bottom = block.rect.top
-                    self.grounded_time_remaining = 0.1
-                else: # self.velocity.y is negative
-                    self.rect.top = block.rect.bottom
-                self.velocity.y = 0
-            elif self.rect.colliderect(block.rect) and block.semisolid:
-                if prev.bottom <= block.rect.top and self.rect.bottom > block.rect.top:
-                    self.rect.bottom = block.rect.top
-                    self.grounded_time_remaining = 0.1
+            if self.rect.colliderect(block.rect) :
+                if block.block_type != BlockType.SEMISOLID:
+                    if block.block_type == BlockType.DEATH:
+                        self.kill()
+                    if self.velocity.y >= 0:
+                        self.rect.bottom = block.rect.top
+                        self.grounded_time_remaining = 0.1
+                    else: # self.velocity.y is negative
+                        self.rect.top = block.rect.bottom
                     self.velocity.y = 0
+                else:
+                    if prev.bottom <= block.rect.top and self.rect.bottom > block.rect.top:
+                        self.rect.bottom = block.rect.top
+                        self.grounded_time_remaining = 0.1
+                        self.velocity.y = 0
 
         if self.grounded_time_remaining > 0:
             self.grounded_time_remaining -= dt
