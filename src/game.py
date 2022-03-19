@@ -2,7 +2,7 @@ import pygame
 from pygame.font import Font
 from pygame.surface import Surface
 
-from inputstate import InputState
+from inputstate import InputState, update_input_state
 from res.dims import dims
 from res.string import strings
 from player import Player
@@ -12,8 +12,8 @@ from Block import Block
 
 class Game:
     def __init__(self):
-        self.inputstate = InputState()
-        self.running: bool = None
+        self.input_state = InputState()
+        self.running: bool = False
         self.window_surface: Surface = None
         self.base_font: Font = None
         self.player = Player()
@@ -34,6 +34,8 @@ class Game:
             self.draw()
             clock.tick(dims['fps'])
 
+        pygame.quit()
+
     def stop(self):
         self.running = False
 
@@ -45,8 +47,8 @@ class Game:
             try:
                 {
                     pygame.QUIT: self.stop,
-                    pygame.KEYDOWN: lambda: self.inputstate.handle_event(event),
-                    pygame.KEYUP: lambda: self.inputstate.handle_event(event),
+                    pygame.KEYDOWN: lambda: update_input_state(self.input_state, event),
+                    pygame.KEYUP: lambda: update_input_state(self.input_state, event),
                 }[event.type]()
             except KeyError:
                 pass
