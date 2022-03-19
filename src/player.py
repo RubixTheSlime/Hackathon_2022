@@ -15,14 +15,22 @@ class Player:
         self.velocity = Vector2(0, 0)
         self.explosion_sprites = [ pygame.image.load(f'src/res/Explode{i}.png') for i in range(1, 7) ]
         self.explosion_rect = None
-        self.sprites = [ pygame.image.load(f'src/res/Erik{x}.png') for x in ['', 'Left', 'Right'] ]
-        self.rect = self.sprites[0].get_rect(center=(100, 100))
+        self.sprites_right = [ pygame.image.load(f'src/res/Erik{x}.png') for x in ['', 'Left', 'Right'] ]
+        self.sprites_left = [ pygame.transform.flip(surface, True, False) for surface in self.sprites_right ]
+        self.facing_right = True
+        self.rect = self.sprites_right[0].get_rect(center=(100, 100))
         # self.rect.height *= 0.95
 
     def handle_movement(self, inputState: InputState, dt):
         if inputState.jump:
             if self.grounded_frames_remaining:
                 self.velocity.y = -1000
+
+        if inputState.right:
+            self.facing_right = True
+        elif inputState.left:
+            self.facing_right = False
+        
 
         target_speed = 400 * (inputState.right - inputState.left)
         if abs(self.velocity.x - target_speed) < 10:
@@ -66,12 +74,13 @@ class Player:
             self.grounded_frames_remaining -= 1
 
     def getSprite(self):
+        sprites = self.sprites_right if self.facing_right else self.sprites_left
         animationLength = 12
         if -50 < self.velocity.x < 50:
-            return self.sprites[0]
-        sprite = self.sprites[self.animation_timer//animationLength]
+            return sprites[0]
+        sprite = sprites[self.animation_timer//animationLength]
         self.animation_timer += 1
-        self.animation_timer %= animationLength*len(self.sprites)
+        self.animation_timer %= animationLength*len(sprites)
         return sprite
         
 
