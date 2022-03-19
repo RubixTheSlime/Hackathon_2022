@@ -6,6 +6,8 @@ from res.dims import dims
 from res.string import strings
 from src.player import Player
 
+from Block import Block
+
 
 class Game:
     def __init__(self):
@@ -13,6 +15,7 @@ class Game:
         self.window_surface: Surface = None
         self.base_font: Font = None
         self.player = Player()
+        self.blocks: 'list[Block]' = None
 
     def run(self) -> None:
         pygame.init()
