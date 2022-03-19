@@ -13,6 +13,8 @@ class Player:
         self.explosion_timer = -1
         self.animation_timer = 0
 
+        self.grenade_count = 2
+
         self.velocity = Vector2(0, 0)
 
         self.explosion_sprites = [ pygame.image.load(f'src/res/Explode{i}.png').convert_alpha() for i in range(1, 7) ]
@@ -43,11 +45,12 @@ class Player:
         else:
             self.velocity.x += (target_speed - self.velocity.x) * dt * 6
 
-        if inputState.boost.pos_edge:
+        if inputState.boost.pos_edge and self.grenade_count > 0:
             self.explosion_timer = 0
             self.velocity.y -= 1600
             self.explosion_rect.centerx = self.rect.centerx
             self.explosion_rect.centery = self.rect.bottom
+            self.grenade_count -= 1
 
     def update(self, dt, blocks):
         target_speed = 1500
@@ -86,7 +89,7 @@ class Player:
 
     def getSprite(self):
         sprites = self.sprites_right if self.facing_right else self.sprites_left
-        animationLength = 4
+        animationLength = 8
         if -50 < self.velocity.x < 50:
             return sprites[0]
         sprite = sprites[self.animation_timer//animationLength]
