@@ -113,7 +113,12 @@ class Game:
             if not self.levelNum == 0:
                 self.level.draw(self.window_surface)
                 self.window_surface.blit(self.base_font.render(f'Bombs - {self.player.grenade_count}', True, (0, 0, 0)), (50, 40))
+<<<<<<< HEAD
                 self.player.draw(self.window_surface, self.level)
+=======
+                self.player.draw(self.window_surface)
+                self.explosion_handler.draw(self.window_surface)
+>>>>>>> 4a941f52d9dd4ff4399dc60d1ce534a924870435
         else:
             if self.transition_frame >= 120:
                 self.transition_frame = -1
