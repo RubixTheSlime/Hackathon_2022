@@ -7,9 +7,8 @@ class Block:
     SIZE = 120
 
     def __init__(self, left=0, top=0):
-        self.sprite = pygame.image.load('src/res/Block.png')
-        self.rect = self.sprite.get_rect(left=left * Block.SIZE, top=top * Block.SIZE,
-                                         width=Block.SIZE, height=Block.SIZE)
+        self.sprite = pygame.image.load('src/res/Block.png').convert()
+        self.rect = self.sprite.get_rect(left=left * Block.SIZE, top=top * Block.SIZE, width=Block.SIZE, height=Block.SIZE)
 
     def update(self):
         pass

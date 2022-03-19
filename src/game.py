@@ -2,6 +2,7 @@ from time import sleep
 import pygame
 from pygame.font import Font
 from pygame.surface import Surface
+from BackgroundBlock import BackgroundBlock
 
 from inputstate import InputState, update_input_state
 from level import Level
@@ -11,25 +12,24 @@ from player import Player
 
 from Block import Block
 
+frame = 0
 
 class Game:
     def __init__(self):
+        pygame.init()
         self.input_state = InputState()
         self.running: bool = False
-        self.window_surface: Surface = None
-        self.background_image = pygame.image.load('src/res/DayBackground.png')
+        self.window_surface = pygame.display.set_mode((dims['window_width'], dims['window_height']))
         self.base_font: Font = None
         self.player = Player()
         self.level = Level()
         self.level.read('src/res/levels/test_level_1.txt')
         # self.blocks: 'list[Block]' = [ Block(left=i, top=dims['window_height']/Block.SIZE - 1) for i in range(16) ] + [ Block(left=i, top=dims['window_height']/Block.SIZE - 2) for i in range(6,10)]
-        self.backgrounds = [pygame.image.load('src/res/StoryBackground.png'), pygame.image.load('src/res/DayBackground.png'), pygame.image.load('src/res/EveningBackground.png'), pygame.image.load('src/res/NightBackground.png'), pygame.image.load('src/res/TheEnd.png')]
+        self.backgrounds = [ pygame.image.load(f'src/res/{name}.png').convert() for name in ['StoryBackground', 'DayBackground', 'EveningBackground', 'NightBackground', 'TheEnd' ] ]
         self.levelNum = 0
 
     def run(self) -> None:
-        pygame.init()
         self.base_font = Font(None, dims['default_font_size'])
-        self.window_surface = pygame.display.set_mode((dims['window_width'], dims['window_height']))
         pygame.display.set_caption(strings['window_title'])
         clock = pygame.time.Clock()
 

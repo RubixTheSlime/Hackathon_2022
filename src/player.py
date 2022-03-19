@@ -15,9 +15,9 @@ class Player:
 
         self.velocity = Vector2(0, 0)
 
-        self.explosion_sprites = [ pygame.image.load(f'src/res/Explode{i}.png') for i in range(1, 7) ]
+        self.explosion_sprites = [ pygame.image.load(f'src/res/Explode{i}.png').convert_alpha() for i in range(1, 7) ]
         self.explosion_rect = self.explosion_sprites[0].get_rect()
-        self.sprites_right = [ pygame.image.load(f'src/res/Erik{x}.png') for x in ['', 'Left', '', 'Right'] ]
+        self.sprites_right = [ pygame.image.load(f'src/res/Erik{x}.png').convert_alpha() for x in ['', 'Left', '', 'Right'] ]
         self.sprites_left = [ pygame.transform.flip(surface, True, False) for surface in self.sprites_right ]
         self.facing_right = True
 
