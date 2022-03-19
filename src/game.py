@@ -23,10 +23,9 @@ class Game:
         self.base_font: Font = None
         self.player = Player()
         self.level = Level()
-        self.level.read('src/res/levels/test_level_2.txt')
         # self.blocks: 'list[Block]' = [ Block(left=i, top=dims['window_height']/Block.SIZE - 1) for i in range(16) ] + [ Block(left=i, top=dims['window_height']/Block.SIZE - 2) for i in range(6,10)]
         self.backgrounds = [ pygame.image.load(f'src/res/{name}.png').convert() for name in ['StoryBackground', 'DayBackground', 'EveningBackground', 'NightBackground', 'TheEnd' ] ]
-        self.levelNum = 0
+        self.start_level(2)
 
     def run(self) -> None:
         self.base_font = Font(None, dims['default_font_size'])
@@ -51,13 +50,22 @@ class Game:
 
     def update(self, dt):
         if self.levelNum == 0 and self.input_state.jump:
-            self.levelNum = 1
+            self.start_level(1)
         if not self.player.alive:
-            self.levelNum = 0
-        self.player.update(dt, self.level.blocks)
+            self.start_level()
+        if self.level.blocks is not None:
+            self.player.update(dt, self.level.blocks)
         if self.player.hasWon:
             # Won Level
             self.levelNum += 1
+
+    def start_level(self, level_num: int = None):
+        if level_num is not None:
+            self.levelNum = level_num
+        self.level.read(f'src/res/levels/level_{max(self.levelNum, 1)}.txt')
+        self.player.grenade_count = self.level.bombs
+        self.player.rect.x, self.player.rect.y = self.level.start * 120
+        self.player.reset()
 
     def handle_events(self, dt):
         for event in pygame.event.get():
