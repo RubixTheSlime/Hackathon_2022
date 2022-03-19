@@ -8,7 +8,7 @@ from inputstate import InputState
 
 class Player:
     def __init__(self):
-        self.grounded_frames_remaining = 0
+        self.grounded_time_remaining = 0
         self.jump_timer = 0
         self.explosion_timer = -1
         self.animation_timer = 0
@@ -23,23 +23,23 @@ class Player:
 
     def handle_movement(self, inputState: InputState, dt):
         if inputState.jump:
-            if self.grounded_frames_remaining:
-                self.velocity.y = -1000
+            if self.grounded_time_remaining > 0:
+                self.velocity.y = -800
 
         if inputState.right:
             self.facing_right = True
         elif inputState.left:
             self.facing_right = False
-        
 
-        target_speed = 400 * (inputState.right - inputState.left)
+        target_speed = 400 * (int(inputState.right) - int(inputState.left))
         if abs(self.velocity.x - target_speed) < 10:
             self.velocity.x = target_speed
         else:
             self.velocity.x += (target_speed - self.velocity.x) * dt * 6
 
-        if inputState.boost:
+        if inputState.boost.pos_edge:
             self.explosion_timer = 0
+            self.velocity.y -= 2200
             self.explosion_rect = self.rect
 
     def update(self, dt, blocks):
@@ -65,13 +65,13 @@ class Player:
             if self.rect.colliderect(block.rect):
                 if self.velocity.y >= 0:
                     self.rect.bottom = block.rect.top
-                    self.grounded_frames_remaining = 3
+                    self.grounded_time_remaining = 0.1
                 else: # self.velocity.y is negative
                     self.rect.top = block.rect.bottom
                 self.velocity.y = 0
 
-        if self.grounded_frames_remaining > 0:
-            self.grounded_frames_remaining -= 1
+        if self.grounded_time_remaining > 0:
+            self.grounded_time_remaining -= dt
 
     def getSprite(self):
         sprites = self.sprites_right if self.facing_right else self.sprites_left
@@ -82,7 +82,7 @@ class Player:
         self.animation_timer += 1
         self.animation_timer %= animationLength*len(sprites)
         return sprite
-        
+
 
     def draw(self, surface: Surface):
         surface.blit(self.getSprite(), self.rect)

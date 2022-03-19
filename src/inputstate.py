@@ -4,22 +4,56 @@ import pygame
 from pygame.event import Event
 
 
-@dataclass
+class Button:
+    def __init__(self):
+        self.future = False
+        self.state = False
+        self.prev = False
+
+    def set(self, state):
+        self.future = state
+
+    def advance(self):
+        self.prev, self.state = self.state, self.future
+
+    @property
+    def pos_edge(self):
+        return self.state and not self.prev
+
+    @property
+    def neg_edge(self):
+        return not self.state and self.prev
+
+    @property
+    def on(self):
+        return self.state
+
+    def __bool__(self):
+        return self.state
+
+    def __int__(self):
+        return int(self.state)
+
+
 class InputState:
     def __init__(self):
-        self.state = {
-            'down': False,
-            'left': False,
-            'right': False,
-            'jump': False,
-            'boost': False,
-            'quit': False,
-        }
+        self.state = {name: Button() for name in (
+            'down',
+            'left',
+            'right',
+            'jump',
+            'boost',
+            'quit',
+        )}
 
     def __getattr__(self, item):
         if item in self.state:
             return self.state[item]
         return False
+
+    def flush(self):
+        for button in self.state.values():
+            button.advance()
 
 
 def update_input_state(input_state: InputState, event: Event):
@@ -34,8 +68,9 @@ def update_input_state(input_state: InputState, event: Event):
             pygame.K_d: 'right',
             pygame.K_RIGHT: 'right',
             pygame.K_SPACE: 'jump',
-            pygame.K_j: 'boost',
+            pygame.K_k: 'boost',
             pygame.K_c: 'boost',
+            pygame.K_e: 'boost',
             pygame.K_ESCAPE: 'quit',
         }[event.key]
 
@@ -43,4 +78,5 @@ def update_input_state(input_state: InputState, event: Event):
         # a key that we're not using, fail gracefully
         return
 
-    input_state.state[button] = (event.type == pygame.KEYDOWN)
+    input_state.state[button].set(event.type == pygame.KEYDOWN)
+
