@@ -25,7 +25,7 @@ class Game:
         self.level = Level()
         # self.blocks: 'list[Block]' = [ Block(left=i, top=dims['window_height']/Block.SIZE - 1) for i in range(16) ] + [ Block(left=i, top=dims['window_height']/Block.SIZE - 2) for i in range(6,10)]
         self.backgrounds = [ pygame.image.load(f'src/res/{name}.png').convert() for name in ['StoryBackground', 'DayBackground', 'EveningBackground', 'NightBackground', 'TheEnd' ] ]
-        self.start_level(2)
+        self.start_level(1)
 
     def run(self) -> None:
         self.base_font = Font(None, dims['default_font_size'])
@@ -55,7 +55,7 @@ class Game:
             self.start_level()
         if self.level.blocks is not None:
             self.player.update(dt, self.level.blocks)
-        if self.player.hasWon:
+        if self.player.hasWon and self.levelNum < 4:
             self.levelNum += 1
             self.start_level(self.levelNum)
 
@@ -91,6 +91,6 @@ class Game:
 
         if not self.levelNum == 0:
             self.level.draw(self.window_surface)
-            self.window_surface.blit(self.base_font.render(f'Bombs - {self.player.grenade_count}', True, (0, 0, 0)), (50, 50))
+            self.window_surface.blit(self.base_font.render(f'Bombs - {self.player.grenade_count}', True, (0, 0, 0)), (50, 40))
             self.player.draw(self.window_surface)
         pygame.display.flip()

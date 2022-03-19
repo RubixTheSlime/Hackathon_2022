@@ -88,12 +88,12 @@ class Player:
         # detect if dead
         if self.rect.y > 1080:
             self.kill()
+        
+        if self.rect.top < 0:
+            self.hasWon = True
 
     def kill(self):
         self.alive = False
-
-        if self.rect.top < 0:
-            self.hasWon = True
 
     def getSprite(self):
         sprites = self.sprites_right if self.facing_right else self.sprites_left
@@ -123,3 +123,4 @@ class Player:
 
         self.velocity = Vector2(0, 0)
         self.alive = True
+        self.hasWon = False
