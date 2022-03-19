@@ -2,6 +2,7 @@ import pygame
 from pygame.font import Font
 from pygame.surface import Surface
 
+from inputstate import InputState
 from res.dims import dims
 from res.string import strings
 from player import Player
@@ -11,6 +12,7 @@ from Block import Block
 
 class Game:
     def __init__(self):
+        self.inputstate = InputState()
         self.running: bool = None
         self.window_surface: Surface = None
         self.base_font: Font = None
@@ -43,6 +45,8 @@ class Game:
             try:
                 {
                     pygame.QUIT: self.stop,
+                    pygame.KEYDOWN: lambda: self.inputstate.handle_event(event),
+                    pygame.KEYUP: lambda: self.inputstate.handle_event(event),
                 }[event.type]()
             except KeyError:
                 pass
