@@ -17,7 +17,7 @@ class Game:
         self.window_surface: Surface = None
         self.base_font: Font = None
         self.player = Player()
-        self.blocks: 'list[Block]' = [ Block(left=i*Block.SIZE, top=dims['window_height']-Block.SIZE) for i in range(16) ] + [ Block(left=i*Block.SIZE + 6*Block.SIZE, top=dims['window_height'] - Block.SIZE*4) for i in range(4)]
+        self.blocks: 'list[Block]' = [ Block(left=i*Block.SIZE, top=dims['window_height']-Block.SIZE) for i in range(16) ] + [ Block(left=i*Block.SIZE + 6*Block.SIZE, top=dims['window_height'] - Block.SIZE*2) for i in range(4)]
 
     def run(self) -> None:
         pygame.init()
@@ -29,9 +29,12 @@ class Game:
         self.running = True
 
         while self.running:
-            self.handle_events()
-            self.update(1/dims['fps'])
-            self.draw()
+            dt = 1/dims['fps']
+            self.handle_events(dt)
+            if self.input_state.quit:
+                self.stop()
+            self.update(dt)
+            self.draw(dt)
             clock.tick(dims['fps'])
 
         pygame.quit()
@@ -42,7 +45,7 @@ class Game:
     def update(self, dt):
         self.player.update(dt, self.blocks)
 
-    def handle_events(self):
+    def handle_events(self, dt):
         for event in pygame.event.get():
             try:
                 {
@@ -53,9 +56,9 @@ class Game:
             except KeyError:
                 pass
         
-        self.player.handle_movement(self.input_state)
+        self.player.handle_movement(self.input_state, dt)
 
-    def draw(self):
+    def draw(self, dt):
         self.window_surface.fill((255, 255, 255), self.window_surface.get_rect())
         for i, block in enumerate(self.blocks):
             block.draw(self.window_surface)
