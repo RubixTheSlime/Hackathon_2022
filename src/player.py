@@ -14,7 +14,7 @@ class Player:
         self.animation_timer = 0
         self.velocity = Vector2(0, 0)
         self.explosion_sprites = [ pygame.image.load(f'src/res/Explode{i}.png') for i in range(1, 7) ]
-        self.explosion_rect = None
+        self.explosion_rect = self.explosion_sprites[0].get_rect()
         self.sprites_right = [ pygame.image.load(f'src/res/Erik{x}.png') for x in ['', 'Left', '', 'Right'] ]
         self.sprites_left = [ pygame.transform.flip(surface, True, False) for surface in self.sprites_right ]
         self.facing_right = True
@@ -40,7 +40,8 @@ class Player:
         if inputState.boost.pos_edge:
             self.explosion_timer = 0
             self.velocity.y -= 2200
-            self.explosion_rect = self.rect
+            self.explosion_rect.centerx = self.rect.centerx
+            self.explosion_rect.centery = self.rect.bottom
 
     def update(self, dt, blocks):
         target_speed = 1500
